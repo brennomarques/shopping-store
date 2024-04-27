@@ -20,7 +20,8 @@
         "nunomaduro/collision": "^8.0",
         "phpmd/phpmd": "^2.15.0",
         "phpunit/phpunit": "^11.0.1",
-        "spatie/laravel-ignition": "^2.4"
+        "spatie/laravel-ignition": "^2.4",
+        "squizlabs/php_codesniffer": "^3.9"
     },
     "autoload": {
         "psr-4": {
@@ -51,7 +52,11 @@
             "@php artisan migrate --graceful --ansi"
         ],
         "lint": [
-            "@phpmd"
+            "@phpmd",
+            "@phpcs"
+        ],
+        "phpcs": [
+            "phpcs"
         ],
         "phpmd": [
             "phpmd app,config,routes,tests text phpmd.xml"

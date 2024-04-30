@@ -16,6 +16,7 @@ class Products extends Model
      */
     protected $fillable = [
         'uuid',
+        'barcode',
         'name',
         'price',
         'qty_stock'

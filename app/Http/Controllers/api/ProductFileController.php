@@ -6,10 +6,8 @@ use App\Helpers\ReadCsvFile;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductFileValidator;
 use App\Models\Products;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use SplFileObject;
 
 class ProductFileController extends Controller
 {
@@ -28,9 +26,16 @@ class ProductFileController extends Controller
 
         foreach ($Products as $row) {
             $orderedUuid = (string) Str::orderedUuid();
+
+            $existingProduct = Products::where('barcode', $row[0])->first();
+            if ($existingProduct) {
+                return response(['message' => 'The list contains products that are already registered.'], Response::HTTP_BAD_REQUEST);
+            }
+
             $product = new Products(
                 [
                     'uuid' => $orderedUuid,
+                    'barcode' => $row[0],
                     'name' => $row[1],
                     'price' => $row[2],
                     'qty_stock' => $row[3],

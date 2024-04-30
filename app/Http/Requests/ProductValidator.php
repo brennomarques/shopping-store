@@ -26,6 +26,7 @@ class ProductValidator extends FormRequest
     public function rules(): array
     {
         return [
+            'barcode' => 'required|string|min:1',
             'name' => 'required|min:4|max:100',
             'price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
             'qty_stock' => 'required|integer'

@@ -17,9 +17,9 @@ class ProductController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return AnonymousResourceCollection|ProductResource
+     * @return AnonymousResourceCollection|ProductResource|Response
      */
-    public function index(Request $request): AnonymousResourceCollection | ProductResource
+    public function index(Request $request): AnonymousResourceCollection | ProductResource | Response
     {
 
         if ($request->has('q')) {
@@ -43,19 +43,25 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      * @param ProductValidator $request
-     * @return ProductResource
+     * @return ProductResource|Response
      */
-    public function store(ProductValidator $request): ProductResource
+    public function store(ProductValidator $request): ProductResource | Response
     {
-        $orderedUuid = (string) Str::orderedUuid();
 
         $input = $request->all();
 
+        $existingProduct = Products::where('barcode', $input['barcode'])->first();
+        if ($existingProduct) {
+            return response(['message' => 'The product is already registered.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $orderedUuid = (string) Str::orderedUuid();
         $product = new Products();
 
         $product->fill(
             [
                 'uuid' => $orderedUuid,
+                'barcode' => $input['barcode'],
                 'name' => $input['name'],
                 'price'  => $input['price'],
                 'qty_stock' => $input['qty_stock'],
@@ -69,12 +75,12 @@ class ProductController extends Controller
 
     /**
      * Display the specified resource.
-     * @param string $uuid
-     * @return ProductResource
+     * @param string $barcode
+     * @return ProductResource|Response
      */
-    public function show(string $uuid): ProductResource
+    public function show(string $barcode): ProductResource | Response
     {
-        $search = Products::where('uuid', $uuid)->first();
+        $search = Products::where('barcode', $barcode)->first();
 
         if (!$search) {
             return response(['message' => 'product not found'], Response::HTTP_NOT_FOUND);
@@ -97,14 +103,14 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param string  $uuid
+     * @param string  $barcode
      *
      * @return ProductResource
      */
-    public function update(Request $request, string $uuid): ProductResource | Response
+    public function update(Request $request, string $barcode): ProductResource | Response
     {
 
-        $product = Products::where('uuid', $uuid)->first();
+        $product = Products::where('barcode', $barcode)->first();
 
         if (!$product) {
             return response(['message' => 'Product not found'], Response::HTTP_NOT_FOUND);
@@ -118,13 +124,15 @@ class ProductController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param string $uuid
+     * @param string $barcode
      * @return Response
      */
-    public function destroy(string $uuid): Response
+    public function destroy(string $barcode): Response
     {
 
-        $product = Products::where('uuid', $uuid)->first();
+        $product = Products::where('barcode', $barcode)->first();
+
+        $uuid = $product->uuid;
 
         if (!$product) {
             return response(['message' => 'Product not found'], Response::HTTP_NOT_FOUND);
@@ -132,6 +140,6 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return new response(['message' => 'Product deleted', 'id' => $uuid], Response::HTTP_OK);
+        return new response(['message' => 'Product deleted', 'id' => $uuid, 'barcode' => $barcode], Response::HTTP_OK);
     }
 }

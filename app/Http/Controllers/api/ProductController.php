@@ -11,7 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Str;
 
-class ProdutController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -92,6 +92,7 @@ class ProdutController extends Controller
     {
         //
     }
+
     /**
      * Update the specified resource in storage.
      *

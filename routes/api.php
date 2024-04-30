@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\api\ProdutController;
+use App\Http\Controllers\api\ProductController;
+use App\Http\Controllers\api\ProductFileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('api')->group(
     function () {
-        Route::apiResource('products', ProdutController::class)->except(['create', 'edit', 'show']);
+        Route::apiResource('products', ProductController::class)->except(['create', 'edit', 'show']);
+        Route::post('file', [ProductFileController::class, 'store'])->name('product.file');
     }
 );

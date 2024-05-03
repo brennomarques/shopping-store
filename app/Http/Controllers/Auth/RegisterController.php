@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class RegisterController extends BaseController
 {
@@ -19,9 +20,16 @@ class RegisterController extends BaseController
      */
     public function store(RegisterValidator $request): JsonResponse
     {
+
         $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        User::create($input);
+        $orderedUuid = (string) Str::orderedUuid();
+
+        $user = new User();
+        $user->uuid = $orderedUuid;
+        $user->name = $input['name'];
+        $user->email = $input['email'];
+        $user->password = bcrypt($input['password']);
+        $user->save();
 
         Log::info('User register successfully' . __METHOD__);
 

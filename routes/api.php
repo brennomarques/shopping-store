@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductFileController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -24,6 +25,7 @@ Route::middleware('api')->group(
                 Route::apiResource('products', ProductController::class)->except(['create', 'edit', 'show']);
                 Route::post('file', [ProductFileController::class, 'store'])->name('product.file');
 
+                Route::get('me', [UserController::class, 'show'])->name('me.show');
                 Route::post('logout', [LogoutController::class, 'destroy'])->name('logout');
             }
         );

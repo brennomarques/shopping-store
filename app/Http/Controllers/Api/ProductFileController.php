@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\Api;
 
 use App\Helpers\ReadCsvFile;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\ProductFileValidator;
 use App\Models\Products;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
-class ProductFileController extends Controller
+class ProductFileController extends BaseController
 {
     /**
      * Store a newly created resource in storage.
@@ -29,7 +29,12 @@ class ProductFileController extends Controller
 
             $existingProduct = Products::where('barcode', $row[0])->first();
             if ($existingProduct) {
-                return response(['message' => 'The list contains products that are already registered.'], Response::HTTP_BAD_REQUEST);
+                return response(
+                    [
+                        'message' => 'The list contains products that are already registered.'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
             }
 
             $product = new Products(

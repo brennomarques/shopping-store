@@ -1,7 +1,10 @@
 <?php
 
-use App\Http\Controllers\api\ProductController;
-use App\Http\Controllers\api\ProductFileController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductFileController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +18,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('api')->group(
     function () {
-        Route::apiResource('products', ProductController::class)->except(['create', 'edit', 'show']);
-        Route::post('file', [ProductFileController::class, 'store'])->name('product.file');
+
+        Route::middleware(['auth:sanctum'])->group(
+            function () {
+                Route::apiResource('products', ProductController::class)->except(['create', 'edit', 'show']);
+                Route::post('file', [ProductFileController::class, 'store'])->name('product.file');
+
+                Route::post('logout', [LogoutController::class, 'destroy'])->name('logout');
+            }
+        );
+
+        Route::middleware('guest')->group(
+            function () {
+                Route::post('login', [LoginController::class, 'store'])->name('login');
+                Route::post('register', [RegisterController::class, 'store'])->name('register');
+            }
+        );
     }
 );

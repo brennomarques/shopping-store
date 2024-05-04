@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\OrdersController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductFileController;
 use App\Http\Controllers\Api\UserController;
@@ -24,6 +25,7 @@ Route::middleware('api')->group(
             function () {
                 Route::apiResource('products', ProductController::class)->except(['create', 'edit', 'show']);
                 Route::post('file', [ProductFileController::class, 'store'])->name('product.file');
+                Route::apiResource('order', OrdersController::class)->except(['create', 'edit', 'show']);
 
                 Route::get('me', [UserController::class, 'show'])->name('me.show');
                 Route::post('logout', [LogoutController::class, 'destroy'])->name('logout');

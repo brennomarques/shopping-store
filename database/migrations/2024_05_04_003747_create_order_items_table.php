@@ -12,19 +12,23 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create(
-            'orders',
+            'order_items',
             function (Blueprint $table) {
                 $table->id();
-                $table->uuid('uuid')->nullable(false);
-                $table->string('name')->nullable(false);
-                $table->bigInteger('client_id')->unsigned()->nullable(false);
-                $table->timestamp('delivery_at');
-                $table->integer('status')->unsigned()->nullable(false);
+                $table->bigInteger('product_id')->unsigned()->nullable(false);
+                $table->bigInteger('order_id')->unsigned()->nullable(false);
+                $table->integer('quantity')->unsigned()->nullable(false);
+                $table->float('price', 8, 2)->unsigned()->nullable(false);
                 $table->timestamps();
 
-                $table->foreign('client_id')
+                $table->foreign('product_id')
                     ->references('id')
-                    ->on('users')
+                    ->on('products')
+                    ->onDelete('cascade');
+
+                $table->foreign('order_id')
+                    ->references('id')
+                    ->on('orders')
                     ->onDelete('cascade');
             }
         );
@@ -36,6 +40,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('order_items');
     }
 };

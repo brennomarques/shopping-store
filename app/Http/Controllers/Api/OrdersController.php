@@ -39,21 +39,11 @@ class OrdersController extends BaseController
     public function store(CreateOrderRequest $request)
     {
         $input = $request->all();
-        $orderedUuid = (string) Str::orderedUuid();
-
-        $order = new Orders();
-        $order->uuid = $orderedUuid;
-        $order->name = $input['name'];
-
-        $order->client_id = $request->user()->id;
-        $order->delivery_at = $input['delivery_at'];
-        $order->status = Orders::WAITING;
-        $order->save();
-
 
         foreach ($input['products'] as $product) {
 
             $searchProduct = Products::where('uuid', $product['id'])->first();
+
             if (!$searchProduct) {
                 Log::info('product not found: ' . $product['id'] . ' ' . __METHOD__);
                 return $this->sendError(['message' => 'product not found', 'id' => $product['id']], Response::HTTP_NOT_FOUND);
@@ -64,7 +54,28 @@ class OrdersController extends BaseController
                 return $this->sendError(['message' => 'O produto está sem estoque', 'id' => $product['id']], Response::HTTP_CONFLICT);
             }
 
-            // return $searchProduct->price;
+            if ($searchProduct->qty_stock < $product['quantity']) {
+                Log::info('Não há quantidade solicitada em estoque: ' . $product['id'] . ' ' . __METHOD__);
+                return $this->sendError(['message' => 'Não há quantidade solicitada em estoque', 'id' => $product['id']], Response::HTTP_CONFLICT);
+            }
+        }
+
+        $orderedUuid = (string) Str::orderedUuid();
+        $order = new Orders();
+        $order->uuid = $orderedUuid;
+        $order->name = $input['name'];
+        $order->client_id = $request->user()->id;
+        $order->delivery_at = $input['delivery_at'];
+        $order->status = Orders::WAITING;
+        $order->save();
+
+        foreach ($input['products'] as $product) {
+
+            $searchProduct = Products::where('uuid', $product['id'])->first();
+
+            // Subitraçao do estoque
+            $searchProduct->qty_stock = ($searchProduct->qty_stock - $product['quantity']);
+            $searchProduct->save();
 
             $productId = $searchProduct->id;
             $orderId = $order->id;
@@ -75,15 +86,11 @@ class OrdersController extends BaseController
             $orderItem->quantity = $product['quantity'];
             $orderItem->price = $searchProduct->price;
             $orderItem->save();
+
+            // Garante que a compra foi finalizada
+            $order->status = Orders::FINISH;
+            $order->save();
         }
-
-
-        // Falta faser a subitraçdo do produto
-        // Tratar se a quantidade tem no estoque
-
-        // Garante que a compra foi finalizada
-        $order->status = Orders::FINISH;
-        $order->save();
 
         return $this->sendResponse('Order completed successfully.', Response::HTTP_OK);
     }

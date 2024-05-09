@@ -9,7 +9,6 @@ use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Str;
 
 class ProductController extends BaseController
 {
@@ -55,12 +54,8 @@ class ProductController extends BaseController
             return response(['message' => 'The product is already registered.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $orderedUuid = (string) Str::orderedUuid();
-        $product = new Products();
-
-        $product->fill(
+        $product = Products::create(
             [
-                'uuid' => $orderedUuid,
                 'barcode' => $input['barcode'],
                 'name' => $input['name'],
                 'price'  => $input['price'],
@@ -68,19 +63,17 @@ class ProductController extends BaseController
             ]
         );
 
-        $product->save();
-
         return new ProductResource($product);
     }
 
     /**
      * Display the specified resource.
-     * @param string $barcode
+     * @param string $uuid
      * @return ProductResource|Response
      */
-    public function show(string $barcode): ProductResource | Response
+    public function show(string $uuid): ProductResource | Response
     {
-        $search = Products::where('barcode', $barcode)->first();
+        $search = Products::where('uuid', $uuid)->first();
 
         if (!$search) {
             return response(['message' => 'product not found'], Response::HTTP_NOT_FOUND);
@@ -103,14 +96,14 @@ class ProductController extends BaseController
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param string  $barcode
+     * @param string  $uuid
      *
      * @return ProductResource
      */
-    public function update(Request $request, string $barcode): ProductResource | Response
+    public function update(Request $request, string $uuid): ProductResource | Response
     {
 
-        $product = Products::where('barcode', $barcode)->first();
+        $product = Products::where('uuid', $uuid)->first();
 
         if (!$product) {
             return response(['message' => 'Product not found'], Response::HTTP_NOT_FOUND);

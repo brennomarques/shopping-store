@@ -7,11 +7,9 @@ use App\Http\Requests\CreateOrderRequest;
 use App\Models\OrderItems;
 use App\Models\Orders;
 use App\Models\Products;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class OrdersController extends BaseController
 {
@@ -60,14 +58,14 @@ class OrdersController extends BaseController
             }
         }
 
-        $orderedUuid = (string) Str::orderedUuid();
-        $order = new Orders();
-        $order->uuid = $orderedUuid;
-        $order->name = $input['name'];
-        $order->client_id = $request->user()->id;
-        $order->delivery_at = $input['delivery_at'];
-        $order->status = Orders::WAITING;
-        $order->save();
+        $order = Orders::create(
+            [
+                'name' => $input['name'],
+                'client_id' => $request->user()->id,
+                'delivery_at'  => $input['delivery_at'],
+                'status' => Orders::WAITING,
+            ]
+        );
 
         foreach ($input['products'] as $product) {
 
@@ -80,12 +78,14 @@ class OrdersController extends BaseController
             $productId = $searchProduct->id;
             $orderId = $order->id;
 
-            $orderItem = new OrderItems();
-            $orderItem->order_id = $orderId;
-            $orderItem->product_id = $productId;
-            $orderItem->quantity = $product['quantity'];
-            $orderItem->price = $searchProduct->price;
-            $orderItem->save();
+            OrderItems::create(
+                [
+                    'order_id' => $orderId,
+                    'product_id' => $productId,
+                    'quantity'  => $product['quantity'],
+                    'price' => $searchProduct->price,
+                ]
+            );
 
             // Garante que a compra foi finalizada
             $order->status = Orders::FINISH;

@@ -25,7 +25,6 @@ class ProductFileController extends BaseController
         $Products = ReadCsvFile::readFileContents($filePath);
 
         foreach ($Products as $row) {
-            $orderedUuid = (string) Str::orderedUuid();
 
             $existingProduct = Products::where('barcode', $row[0])->first();
             if ($existingProduct) {
@@ -37,17 +36,14 @@ class ProductFileController extends BaseController
                 );
             }
 
-            $product = new Products(
+            Products::create(
                 [
-                    'uuid' => $orderedUuid,
                     'barcode' => $row[0],
                     'name' => $row[1],
                     'price' => $row[2],
                     'qty_stock' => $row[3],
                 ]
             );
-
-            $product->save();
         }
 
         return response()->json(['message' => 'Products imported successfully'], Response::HTTP_OK);

@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class RegisterController extends BaseController
 {
@@ -22,14 +21,13 @@ class RegisterController extends BaseController
     {
 
         $input = $request->all();
-        $orderedUuid = (string) Str::orderedUuid();
-
-        $user = new User();
-        $user->uuid = $orderedUuid;
-        $user->name = $input['name'];
-        $user->email = $input['email'];
-        $user->password = bcrypt($input['password']);
-        $user->save();
+        User::create(
+            [
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'password'  => bcrypt($input['password']),
+            ]
+        );
 
         Log::info('User register successfully' . __METHOD__);
 

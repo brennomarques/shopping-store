@@ -117,13 +117,13 @@ class ProductController extends BaseController
 
     /**
      * Remove the specified resource from storage.
-     * @param string $barcode
+     * @param string $uuid
      * @return Response
      */
-    public function destroy(string $barcode): Response
+    public function destroy(string $uuid): Response
     {
 
-        $product = Products::where('barcode', $barcode)->first();
+        $product = Products::where('uuid', $uuid)->first();
 
         $uuid = $product->uuid;
 
@@ -133,6 +133,6 @@ class ProductController extends BaseController
 
         $product->delete();
 
-        return new response(['message' => 'Product deleted', 'id' => $uuid, 'barcode' => $barcode], Response::HTTP_OK);
+        return new response(['message' => 'Product deleted', 'id' => $uuid], Response::HTTP_OK);
     }
 }

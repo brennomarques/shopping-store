@@ -40,8 +40,10 @@ class Products extends Model
     {
         parent::boot();
 
-        static::creating(function ($model) {
-            $model->uuid = Str::uuid();
-        });
+        static::creating(
+            function ($model) {
+                $model->uuid = Str::uuid();
+            }
+        );
     }
 }

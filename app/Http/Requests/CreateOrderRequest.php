@@ -33,7 +33,9 @@ class CreateOrderRequest extends FormRequest
             'products' => [
                 'required',
                 'array',
+                // @codingStandardsIgnoreStart
                 function ($attribute, $value, $fail) {
+                    // @codingStandardsIgnoreEnd
                     $rules = [
                         'id' => 'required|string',
                         'quantity' => 'required|integer|min:1',

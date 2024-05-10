@@ -45,18 +45,20 @@ class Orders extends Model
     {
         parent::boot();
 
-        static::creating(function ($model) {
-            $model->uuid = Str::uuid();
-        });
+        static::creating(
+            function ($model) {
+                $model->uuid = Str::uuid();
+            }
+        );
     }
 
     /**
      * The attributes that should be cast to native types.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     * 
+     *
      */
-    function orderItems(): HasMany
+    public function orderItems(): HasMany
     {
         return $this->hasMany('App\Models\OrderItems', 'order_id');
     }

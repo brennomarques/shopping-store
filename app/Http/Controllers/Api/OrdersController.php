@@ -7,6 +7,7 @@ use App\Http\Requests\CreateOrderRequest;
 use App\Models\OrderItems;
 use App\Models\Orders;
 use App\Models\Products;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -17,44 +18,63 @@ class OrdersController extends BaseController
 
     /**
      * Display a listing of the resource.
+     * @return void
      */
-    public function index()
+    public function index(): void
     {
         //
     }
 
     /**
      * Show the form for creating a new resource.
+     * @return void
      */
-    public function create()
+    public function create(): void
     {
         //
     }
 
     /**
      * Store a newly created resource in storage.
+     * @param CreateOrderRequest $request
+     * @return JsonResponse JsonResponse
      */
-    public function store(CreateOrderRequest $request)
+    public function store(CreateOrderRequest $request): JsonResponse
     {
         $input = $request->all();
 
         foreach ($input['products'] as $product) {
-
             $searchProduct = Products::where('uuid', $product['id'])->first();
 
             if (!$searchProduct) {
                 Log::info('product not found: ' . $product['id'] . ' ' . __METHOD__);
-                return $this->sendError(['message' => 'product not found', 'id' => $product['id']], Response::HTTP_NOT_FOUND);
+                return $this->sendError(
+                    [
+                        'message' => 'product not found', 'id' => $product['id']
+                    ],
+                    Response::HTTP_NOT_FOUND
+                );
             }
 
             if ($searchProduct->qty_stock == OrdersController::ZERO_STOCK) {
                 Log::info('O produto está sem estoque: ' . $product['id'] . ' ' . __METHOD__);
-                return $this->sendError(['message' => 'O produto está sem estoque', 'id' => $product['id']], Response::HTTP_CONFLICT);
+                return $this->sendError(
+                    [
+                        'message' => 'O produto está sem estoque', 'id' => $product['id']
+                    ],
+                    Response::HTTP_CONFLICT
+                );
             }
 
             if ($searchProduct->qty_stock < $product['quantity']) {
                 Log::info('Não há quantidade solicitada em estoque: ' . $product['id'] . ' ' . __METHOD__);
-                return $this->sendError(['message' => 'Não há quantidade solicitada em estoque', 'id' => $product['id']], Response::HTTP_CONFLICT);
+                return $this->sendError(
+                    [
+                        'message' => 'Não há quantidade solicitada em estoque',
+                        'id' => $product['id'], 'name' => $searchProduct->name
+                    ],
+                    Response::HTTP_CONFLICT
+                );
             }
         }
 
@@ -68,7 +88,6 @@ class OrdersController extends BaseController
         );
 
         foreach ($input['products'] as $product) {
-
             $searchProduct = Products::where('uuid', $product['id'])->first();
 
             // Subitraçao do estoque
@@ -97,32 +116,41 @@ class OrdersController extends BaseController
 
     /**
      * Display the specified resource.
+     * @param string $uuid
+     * @return void
      */
-    public function show(string $id)
+    public function show(string $uuid): void
     {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
+     * @param string $uuid
+     * @return void
      */
-    public function edit(string $id)
+    public function edit(string $uuid): void
     {
         //
     }
 
     /**
      * Update the specified resource in storage.
+     * @param Request $request
+     * @param string  $uuid
+     * @return void
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $uuid): void
     {
         //
     }
 
     /**
      * Remove the specified resource from storage.
+     * @param string $uuid
+     * @return void
      */
-    public function destroy(string $id)
+    public function destroy(string $uuid): void
     {
         //
     }

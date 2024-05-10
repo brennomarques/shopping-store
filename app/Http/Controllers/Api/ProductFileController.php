@@ -25,7 +25,6 @@ class ProductFileController extends BaseController
         $Products = ReadCsvFile::readFileContents($filePath);
 
         foreach ($Products as $row) {
-
             $existingProduct = Products::where('barcode', $row[0])->first();
             if ($existingProduct) {
                 return response(

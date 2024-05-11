@@ -6,7 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\CreateOrderRequest;
 use App\Models\OrderItems;
 use App\Models\Orders;
-use App\Services\OrderService;
+use App\Services\CheckStockService;
 use App\Services\SubtractStockService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -16,11 +16,11 @@ class OrdersController extends BaseController
     /**
      * Create a new instance OrdersController.
      *
-     * @param OrderService         $orderService
+     * @param CheckStockService    $checkStockService
      * @param SubtractStockService $subtractStockService
      */
     public function __construct(
-        protected OrderService $orderService,
+        protected CheckStockService $checkStockService,
         protected SubtractStockService $subtractStockService
     ) {
     }
@@ -34,7 +34,7 @@ class OrdersController extends BaseController
     {
         $input = $request->all();
 
-        $this->orderService->validatesStock($input['products']);
+        $this->checkStockService->validatesStock($input['products']);
 
         $order = Orders::create(
             [

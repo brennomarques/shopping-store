@@ -6,9 +6,8 @@ use App\Http\Resources\ProductResource;
 use App\Models\Products;
 use Exception;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Response;
 
-class OrderService
+class CheckStockService
 {
     private const ZERO_STOCK = 0;
 
@@ -28,7 +27,7 @@ class OrderService
                 throw new Exception('product not found: ' . $product['id']);
             }
 
-            if ($searchProduct->qty_stock == OrderService::ZERO_STOCK) {
+            if ($searchProduct->qty_stock == CheckStockService::ZERO_STOCK) {
                 Log::info('O produto está sem estoque: ' . $product['id'] . ' ' . __METHOD__);
                 throw new Exception('O produto está sem estoque, ID:' . $product['id']);
             }

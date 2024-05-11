@@ -6,6 +6,7 @@ Shopping Store API, desenvolvida com Laravel 11, é uma plataforma online para c
 
 -   [Framework Laravel 11](https://laravel.com/).
 -   [Laravel sail](https://laravel.com/docs/11.x/sail).
+-   [Laravel Mail](https://laravel.com/docs/11.x/mail#main-content).
 -   [Modo de autentiocação sanctum](https://laravel.com/docs/11.x/sanctum#main-content).
 -   [Docker](https://www.docker.com/get-started/)
 -   [Banco de dado MySQL](https://www.mysql.com/why-mysql/white-papers/).
@@ -23,4 +24,4 @@ Construído usando o framework Vue 3 com TypeScript para criar uma experiência 
 -   [Bootstrap](https://getbootstrap.com/).
 -   [Repositório do Projeto](https://github.com/brennomarques/shopping-store-front).
 
-No repositório do projeto front-end (Shopping Store), contém as instruiçoes para usar local do projeto.
+No repositório do projeto front-end (Shopping Store), contém as instruiçoes para o uso local do projeto.

@@ -31,15 +31,6 @@ class ProductController extends BaseController
     }
 
     /**
-     * Show the form for creating a new resource.
-     * @return void
-     */
-    public function create(): void
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      * @param ProductValidator $request
      * @return ProductResource|Response
@@ -80,16 +71,6 @@ class ProductController extends BaseController
         }
 
         return new ProductResource($search);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param string $uuid
-     * @return void
-     */
-    public function edit(string $uuid): void
-    {
-        //
     }
 
     /**

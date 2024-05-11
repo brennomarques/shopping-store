@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CreateOrderRequest;
+use App\Mail\OrderCompleted;
 use App\Models\OrderItems;
 use App\Models\Orders;
 use App\Services\CheckStockService;
 use App\Services\SubtractStockService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 
 class OrdersController extends BaseController
 {
@@ -64,6 +66,8 @@ class OrdersController extends BaseController
             $order->status = Orders::FINISH;
             $order->save();
         }
+
+        Mail::to($request->user()->email)->send(new OrderCompleted($request->user()));
 
         return $this->sendResponse('Order completed successfully.', Response::HTTP_OK);
     }

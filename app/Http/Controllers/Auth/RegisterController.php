@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Auth\RegisterValidator;
+use App\Mail\Welcome;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends BaseController
 {
@@ -21,7 +23,7 @@ class RegisterController extends BaseController
     {
 
         $input = $request->all();
-        User::create(
+        $response = User::create(
             [
                 'name' => $input['name'],
                 'email' => $input['email'],
@@ -30,6 +32,7 @@ class RegisterController extends BaseController
         );
 
         Log::info('User register successfully' . __METHOD__);
+        Mail::to($response->email)->send(new Welcome($response));
 
         return $this->sendResponse('User register successfully.', Response::HTTP_OK);
     }

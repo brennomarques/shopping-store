@@ -7,6 +7,7 @@ Shopping Store API, desenvolvida com Laravel 11, é uma plataforma online para c
 -   [Framework Laravel 11](https://laravel.com/).
 -   [Laravel sail](https://laravel.com/docs/11.x/sail).
 -   [Laravel Mail](https://laravel.com/docs/11.x/mail#main-content).
+-   [Mailpit](https://mailpit.axllent.org/).
 -   [Modo de autentiocação sanctum](https://laravel.com/docs/11.x/sanctum#main-content).
 -   [Docker](https://www.docker.com/get-started/)
 -   [Banco de dado MySQL](https://www.mysql.com/why-mysql/white-papers/).

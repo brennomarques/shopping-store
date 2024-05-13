@@ -16,10 +16,10 @@ class OrderItemsFactory extends Factory
      */
     public function definition(): array
     {
-        $uniqueNumbers = $this->uniqueRandomNumber(1, 6, 6);
+        $uniqueNumbers = $this->uniqueRandomNumber(1, 5, 5);
         return [
-            'product_id' => $uniqueNumbers[$this->faker->numberBetween(0, 5)],
-            'order_id' => $uniqueNumbers[$this->faker->numberBetween(0, 5)],
+            'product_id' => $uniqueNumbers[$this->faker->numberBetween(0, 4)],
+            'order_id' => $uniqueNumbers[$this->faker->numberBetween(0, 4)],
             'quantity' => $this->faker->numberBetween(0, 100),
             'price' => $this->faker->randomFloat(2, 10, 100),
         ];

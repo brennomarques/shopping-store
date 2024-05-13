@@ -28,9 +28,9 @@ class OrdersFactory extends Factory
     /**
      * Generates an array of unique numbers within a range.
      *
-     * @param int $min 
-     * @param int $max
-     * @param int $count
+     * @param integer $min
+     * @param integer $max
+     * @param integer $count
      * @return array<int>
      */
     protected function uniqueRandomNumber(int $min, int $max, int $count): array

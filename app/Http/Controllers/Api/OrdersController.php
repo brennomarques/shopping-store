@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CreateOrderRequest;
+use App\Http\Resources\OrderResource;
 use App\Mail\OrderCompleted;
 use App\Models\OrderItems;
 use App\Models\Orders;
@@ -11,6 +12,7 @@ use App\Services\CheckStockService;
 use App\Services\SubtractStockService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class OrdersController extends BaseController
@@ -25,6 +27,29 @@ class OrdersController extends BaseController
         protected CheckStockService $checkStockService,
         protected SubtractStockService $subtractStockService
     ) {
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return AnonymousResourceCollection|ProductResource|Response
+     */
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        $userId = $user->id;
+
+        $query = Orders::with('orderItems')->where('client_id', $userId);
+
+        if ($request->has('status')) {
+            $searchStatus = $request->query('status');
+            $query->where('status', $searchStatus);
+        }
+
+        $orders = $query->orderByDesc('created_at')->paginate(10);
+
+        return OrderResource::collection($orders);
     }
 
     /**

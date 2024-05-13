@@ -26,7 +26,7 @@ Route::middleware('api')->group(
                 Route::apiResource('products', ProductController::class)->except(['create', 'edit', 'show']);
                 Route::post('file', [ProductFileController::class, 'store'])->name('product.file');
                 Route::apiResource('order', OrdersController::class)->except(
-                    ['index', 'create', 'show', 'edit', 'update', 'destroy']
+                    ['create', 'show', 'edit', 'update', 'destroy']
                 );
 
                 Route::get('me', [UserController::class, 'show'])->name('me.show');

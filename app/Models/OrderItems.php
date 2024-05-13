@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderItems extends Model
 {
@@ -30,4 +30,14 @@ class OrderItems extends Model
     protected $hidden = [
         'id',
     ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     *@return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Orders::class, 'order_id', 'id'); // 'order_id' deve ser o nome da coluna na tabela 'order_items' que faz referência ao ID da ordem
+    }
 }

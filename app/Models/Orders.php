@@ -55,11 +55,10 @@ class Orders extends Model
     /**
      * The attributes that should be cast to native types.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     *
+     *@return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function orderItems(): HasMany
     {
-        return $this->hasMany('App\Models\OrderItems', 'order_id');
+        return $this->hasMany(OrderItems::class, 'order_id', 'id');
     }
 }
